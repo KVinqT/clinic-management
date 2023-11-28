@@ -1,10 +1,10 @@
 import express from "express";
+import clinicRouter from "./routers/clinicRouter";
 const port = 3000;
 const app = express();
+app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.send("Hello TypeScript");
-});
+app.use("/", clinicRouter);
 
 app.listen(port, () => {
   console.log(`server listening on port ${port}`);

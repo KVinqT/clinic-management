@@ -10,22 +10,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Pets{
-  id Int @id @default(autoincrement())
-  name String 
-  gender String
-  DoB DateTime
-  pet_parents pet_parents[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime? @updatedAt
-}
 
 model Parents{
   id Int @id @default(autoincrement())
   name String
   phone_number Int 
   address String
+  cities Cities? @relation(fields: [citiesId],references: [id])
+  citiesId Int?
+  townships Townwships? @relation(fields: [townshipsId],references: [id])
+  townshipsId Int?
   pet_parents pet_parents[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+model Pets{
+  id Int @id @default(autoincrement())
+  name String 
+  gender String
+  dob DateTime
+  pet_parents pet_parents[]
+  breed Breed @relation(fields: [breedId],references: [id])
+  breedId Int
+  status Status @relation(fields: [statusId],references: [id])
+  statusId Int
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt
 }
@@ -33,6 +42,7 @@ model Parents{
 model Breed {
   id Int @id @default(autoincrement())
   name String
+  pets Pets[]
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt
 }
@@ -40,6 +50,7 @@ model Breed {
 model Status {
   id Int @id @default(autoincrement())
   Status_type String
+  pets Pets[]
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt
 }
@@ -49,12 +60,14 @@ model Cities {
   name String
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt
+  parents Parents[]
 }
 
 
 model Townwships{
   id Int @id @default(autoincrement())
   name String
+  parents Parents[]
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt
 }
