@@ -18,16 +18,7 @@ export const createClinicData = async (req: Request, res: Response) => {
     township,
   } = petsAndParentsData;
 
-  const petDatas = await prisma.pets.create({
-    data: {
-      name: petName,
-      gender,
-      dob: dateOfBirth,
-      breedId: breed,
-      statusId: status,
-    },
-  });
-
+  //if exist take parentId
   const ParentExist = await prisma.parents.findFirst({
     where: {
       phone_number: phoneNumber,
@@ -38,24 +29,32 @@ export const createClinicData = async (req: Request, res: Response) => {
   if (!ParentExist) {
     const parentDatas = await prisma.parents.create({
       data: {
-        name: parentName,
+        name: parentName.toLowerCase(),
         phone_number: phoneNumber,
-        address: address,
+        address: address.toLowerCase(),
         citiesId: city,
         townshipsId: township,
       },
     });
-    await prisma.pet_parents.create({
+    const petDatas = await prisma.pets.create({
       data: {
-        parentId: parentDatas.id,
-        petId: petDatas.id,
+        name: petName.toLowerCase(),
+        gender,
+        dob: dateOfBirth,
+        breedId: breed,
+        statusId: status,
+        parentsId: parentDatas.id,
       },
     });
   } else {
-    await prisma.pet_parents.create({
+    await prisma.pets.create({
       data: {
-        parentId: ParentExist.id,
-        petId: petDatas.id,
+        name: petName,
+        gender,
+        dob: dateOfBirth,
+        breedId: breed,
+        statusId: status,
+        parentsId: ParentExist.id,
       },
     });
   }

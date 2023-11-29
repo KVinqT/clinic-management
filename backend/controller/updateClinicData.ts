@@ -19,7 +19,8 @@ export const updateClinicData = async (req: Request, res: Response) => {
     city,
     township,
   } = updatedData;
-  await prisma.pets.update({
+
+  const petData = await prisma.pets.update({
     where: {
       id: Number(toUpdateId),
     },
@@ -31,15 +32,9 @@ export const updateClinicData = async (req: Request, res: Response) => {
       statusId: status,
     },
   });
-  const relatedParent = await prisma.pet_parents.findFirst({
-    where: {
-      petId: Number(toUpdateId),
-    },
-  });
-  const parentId = relatedParent?.parentId;
   await prisma.parents.update({
     where: {
-      id: parentId,
+      id: Number(petData.parentsId),
     },
     data: {
       name: parentName,
