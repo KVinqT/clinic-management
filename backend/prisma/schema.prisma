@@ -20,7 +20,7 @@ model Parents{
   citiesId Int?
   townships Townwships? @relation(fields: [townshipsId],references: [id])
   townshipsId Int?
-  pet_parents pet_parents[]
+  pets Pets[]
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt
 }
@@ -30,11 +30,12 @@ model Pets{
   name String 
   gender String
   dob DateTime
-  pet_parents pet_parents[]
   breed Breed @relation(fields: [breedId],references: [id])
   breedId Int
   status Status @relation(fields: [statusId],references: [id])
   statusId Int
+  parents Parents? @relation(fields: [parentsId],references: [id],onDelete: Cascade)
+  parentsId Int?
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt
 }
@@ -63,7 +64,6 @@ model Cities {
   parents Parents[]
 }
 
-
 model Townwships{
   id Int @id @default(autoincrement())
   name String
@@ -72,12 +72,3 @@ model Townwships{
   updatedAt DateTime? @updatedAt
 }
 
-model pet_parents{
-id Int @id @default(autoincrement())
-pets Pets @relation(fields: [petId], references: [id])
-petId Int
-parents Parents @relation(fields: [parentId], references: [id])
-parentId Int
-createdAt DateTime @default(now())
-updatedAt DateTime? @updatedAt
-}

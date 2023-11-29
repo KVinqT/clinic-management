@@ -4,38 +4,30 @@ const prisma = new PrismaClient();
 
 export const deleteClinicData = async (req: Request, res: Response) => {
   const toDeleteId = req.params.petId;
-  console.log(toDeleteId);
-
-  const petsAndParentsData = await prisma.pet_parents.findFirst({
+  console.log("toDeleteId", toDeleteId);
+  const petDatas = await prisma.pets.findFirst({
     where: {
-      petId: Number(toDeleteId),
+      id: Number(toDeleteId),
     },
   });
-  const petAndParentId = petsAndParentsData?.id;
-  const parentId = petsAndParentsData?.parentId;
-  await prisma.pet_parents.delete({
-    where: {
-      id: petAndParentId,
-    },
-  });
+  const parentIdOfPet = petDatas?.parentsId;
   await prisma.pets.delete({
     where: {
       id: Number(toDeleteId),
     },
   });
-
-  const isParentStillExist = await prisma.pet_parents.findFirst({
+  const isParentStillExist = await prisma.pets.findFirst({
     where: {
-      parentId: Number(parentId),
+      parentsId: Number(parentIdOfPet),
     },
   });
 
   if (!isParentStillExist) {
     await prisma.parents.delete({
       where: {
-        id: parentId,
+        id: Number(parentIdOfPet),
       },
     });
   }
-  res.send(200);
+  res.sendStatus(200);
 };
