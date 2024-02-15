@@ -9,7 +9,6 @@ export const getClinicData = async (req: Request, res: Response) => {
   const searchPetName = statusData.searchName as string;
   console.log("statusData", statusData);
   try {
-    const whereforParent = {};
     const whereByCondition: any = {};
     if (statusId) {
       whereByCondition["statusId"] = Number(statusId);
@@ -23,11 +22,17 @@ export const getClinicData = async (req: Request, res: Response) => {
     const allPetsData = await prisma.pets.findMany({
       where: whereByCondition,
       include: {
-        parents: true,
+        breed: true,
+        status: true,
+        parents: {
+          include: {
+            townships: true,
+            cities: true,
+          },
+        },
       },
     });
-    res.send(allPetsData);
-    res.sendStatus(200);
+    res.status(200).send(allPetsData);
   } catch (err) {
     console.log(err);
   }

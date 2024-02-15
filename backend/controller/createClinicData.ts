@@ -46,6 +46,7 @@ export const createClinicData = async (req: Request, res: Response) => {
         parentsId: parentDatas.id,
       },
     });
+    res.status(200).send({ petDatas });
   } else {
     await prisma.pets.create({
       data: {
@@ -57,6 +58,6 @@ export const createClinicData = async (req: Request, res: Response) => {
         parentsId: ParentExist.id,
       },
     });
+    res.status(200);
   }
-  res.send(200);
 };

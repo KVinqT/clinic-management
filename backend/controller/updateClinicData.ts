@@ -20,29 +20,33 @@ export const updateClinicData = async (req: Request, res: Response) => {
     township,
   } = updatedData;
 
-  const petData = await prisma.pets.update({
-    where: {
-      id: Number(toUpdateId),
-    },
-    data: {
-      name: petName,
-      gender,
-      dob: dateOfBirth,
-      breedId: breed,
-      statusId: status,
-    },
-  });
-  await prisma.parents.update({
-    where: {
-      id: Number(petData.parentsId),
-    },
-    data: {
-      name: parentName,
-      phone_number: phoneNumber,
-      address: address,
-      citiesId: city,
-      townshipsId: township,
-    },
-  });
-  res.send(200);
+  try {
+    const petData = await prisma.pets.update({
+      where: {
+        id: Number(toUpdateId),
+      },
+      data: {
+        name: petName,
+        gender,
+        dob: dateOfBirth,
+        breedId: breed,
+        statusId: status,
+      },
+    });
+    await prisma.parents.update({
+      where: {
+        id: Number(petData.parentsId),
+      },
+      data: {
+        name: parentName,
+        phone_number: phoneNumber,
+        address: address,
+        citiesId: city,
+        townshipsId: township,
+      },
+    });
+    res.status(200).send({ petData });
+  } catch (error) {
+    return res.status(500).send(error);
+  }
 };
