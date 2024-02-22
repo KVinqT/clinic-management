@@ -3,7 +3,9 @@ import { getClinicData } from "../controller/getClinicData";
 import { createClinicData } from "../controller/createClinicData";
 import { updateClinicData } from "../controller/updateClinicData";
 import { deleteClinicData } from "../controller/deleteClinicData";
+import { authMiddleware } from "../auth/authMiddleware";
 const clinicRouter = express.Router();
+clinicRouter.all("*", authMiddleware);
 
 /**
  * @swagger
@@ -186,7 +188,9 @@ const clinicRouter = express.Router();
 /**
  * @swagger
  * /:
- *     get:
+ *    security:
+ *       - bearerAuth: []
+ *    get:
  *       summary: Returns all the information about the pets
  *       tags: [Clinic]
  *       responses:
@@ -204,6 +208,8 @@ clinicRouter.get("/", getClinicData);
 /**
  * @swagger
  * /:
+ *      security:
+ *       - bearerAuth: []
  *      post:
  *          summary: Created a new Clinic Data
  *          tags: [Clinic]
@@ -227,6 +233,9 @@ clinicRouter.post("/", createClinicData);
 /**
  * @swagger
  * /{petId}:
+ *
+ *     security:
+ *       - bearerAuth: []
  *     put:
  *       summary: Update a new Pet's Data
  *       tags: [Clinic]
@@ -262,6 +271,9 @@ clinicRouter.put("/:petId", updateClinicData);
 /**
  * @swagger
  *  /{petId}:
+ *
+ *      security:
+ *       - bearerAuth: []
  *      delete:
  *          summary: Remove the pet by petId
  *          tags: [Clinic]
